@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-inter: 'Inter', sans-serif;
+  --font-outfit: 'Outfit', sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-sans antialiased;
+    background: linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 100%);
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl;
+  }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-400 via-accent-400 to-mars-orange;
+  }
+
+  .btn-primary {
+    @apply px-6 py-3 bg-gradient-to-r from-primary-500 to-accent-500 text-white font-semibold rounded-xl
+    hover:from-primary-600 hover:to-accent-600 transition-all duration-300 transform hover:scale-105
+    focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 focus:ring-offset-mars-dark;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 bg-white/10 backdrop-blur border border-white/30 text-white font-semibold rounded-xl
+    hover:bg-white/20 transition-all duration-300;
+  }
+
+  .btn-donate {
+    @apply px-8 py-4 bg-gradient-to-r from-mars-orange to-mars-red text-white font-bold text-lg rounded-full
+    shadow-lg shadow-mars-orange/30 hover:shadow-xl hover:shadow-mars-orange/40 
+    transform hover:scale-105 transition-all duration-300;
+  }
+
+  .section-padding {
+    @apply py-20 px-4 sm:px-6 lg:px-8;
+  }
+
+  .container-custom {
+    @apply max-w-7xl mx-auto;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50
+    focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent transition-all;
+  }
+
+  .card-hover {
+    @apply transition-all duration-500 hover:transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary-500/20;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a2e;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #764ba2 0%, #667eea 100%);
+}
+
+/* Animation classes */
+.fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-up {
+  animation: slideUp 0.6s ease-out forwards;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Impact counter animation */
+.counter-value {
+  font-variant-numeric: tabular-nums;
+}
