@@ -1,5 +1,6 @@
 const Blog = require('../models/Blog');
 const cloudinary = require('../config/cloudinary');
+const { uploadFromBuffer } = require('../utils/cloudinary');
 
 // @desc    Get all blogs (public)
 // @route   GET /api/blogs
@@ -93,7 +94,7 @@ exports.createBlog = async (req, res, next) => {
 
         // Handle image upload to cloudinary
         if (req.file) {
-            const result = await cloudinary.uploader.upload(req.file.path, {
+            const result = await uploadFromBuffer(req.file.buffer, {
                 folder: 'ngo/blogs'
             });
             req.body.featuredImage = {
@@ -141,7 +142,7 @@ exports.updateBlog = async (req, res, next) => {
                 await cloudinary.uploader.destroy(blog.featuredImage.publicId);
             }
 
-            const result = await cloudinary.uploader.upload(req.file.path, {
+            const result = await uploadFromBuffer(req.file.buffer, {
                 folder: 'ngo/blogs'
             });
             req.body.featuredImage = {

@@ -1,5 +1,6 @@
 const Program = require('../models/Program');
 const cloudinary = require('../config/cloudinary');
+const { uploadFromBuffer } = require('../utils/cloudinary');
 
 // @desc    Get all programs
 // @route   GET /api/programs
@@ -87,7 +88,7 @@ exports.createProgram = async (req, res, next) => {
         // Handle featured image upload
         req.body.featuredImage = {};
         if (req.files && req.files.featuredImage) {
-            const result = await cloudinary.uploader.upload(req.files.featuredImage[0].path, {
+            const result = await uploadFromBuffer(req.files.featuredImage[0].buffer, {
                 folder: 'ngo/programs'
             });
             req.body.featuredImage.url = result.secure_url;
@@ -96,7 +97,7 @@ exports.createProgram = async (req, res, next) => {
 
         // Handle mobile image upload
         if (req.files && req.files.mobileImage) {
-            const result = await cloudinary.uploader.upload(req.files.mobileImage[0].path, {
+            const result = await uploadFromBuffer(req.files.mobileImage[0].buffer, {
                 folder: 'ngo/programs/mobile'
             });
             req.body.featuredImage.mobileUrl = result.secure_url;
@@ -107,7 +108,7 @@ exports.createProgram = async (req, res, next) => {
         if (req.files && req.files.gallery) {
             const galleryImages = [];
             for (const file of req.files.gallery) {
-                const result = await cloudinary.uploader.upload(file.path, {
+                const result = await uploadFromBuffer(file.buffer, {
                     folder: 'ngo/programs/gallery'
                 });
                 galleryImages.push({
@@ -161,7 +162,7 @@ exports.updateProgram = async (req, res, next) => {
             if (program.featuredImage?.publicId) {
                 await cloudinary.uploader.destroy(program.featuredImage.publicId);
             }
-            const result = await cloudinary.uploader.upload(req.files.featuredImage[0].path, {
+            const result = await uploadFromBuffer(req.files.featuredImage[0].buffer, {
                 folder: 'ngo/programs'
             });
             featuredImage.url = result.secure_url;
@@ -173,7 +174,7 @@ exports.updateProgram = async (req, res, next) => {
             if (program.featuredImage?.mobilePublicId) {
                 await cloudinary.uploader.destroy(program.featuredImage.mobilePublicId);
             }
-            const result = await cloudinary.uploader.upload(req.files.mobileImage[0].path, {
+            const result = await uploadFromBuffer(req.files.mobileImage[0].buffer, {
                 folder: 'ngo/programs/mobile'
             });
             featuredImage.mobileUrl = result.secure_url;
@@ -186,7 +187,7 @@ exports.updateProgram = async (req, res, next) => {
         if (req.files && req.files.gallery) {
             const newGalleryImages = [];
             for (const file of req.files.gallery) {
-                const result = await cloudinary.uploader.upload(file.path, {
+                const result = await uploadFromBuffer(file.buffer, {
                     folder: 'ngo/programs/gallery'
                 });
                 newGalleryImages.push({

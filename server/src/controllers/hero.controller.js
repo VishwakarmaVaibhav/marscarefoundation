@@ -1,4 +1,6 @@
 const Hero = require('../models/Hero');
+const cloudinary = require('../config/cloudinary');
+const { uploadFromBuffer } = require('../utils/cloudinary');
 const fs = require('fs');
 const path = require('path');
 
@@ -50,14 +52,24 @@ exports.createHero = async (req, res) => {
 
         // Handle Desktop Media
         if (req.files && req.files.media) {
-            mediaUrl = `/uploads/${req.files.media[0].filename}`;
+            const result = await uploadFromBuffer(req.files.media[0].buffer, {
+                folder: 'ngo/hero',
+                resource_type: 'auto'
+            });
+            mediaUrl = result.secure_url;
+            req.body.mediaPublicId = result.public_id;
         } else if (req.body.mediaUrl) {
             mediaUrl = req.body.mediaUrl;
         }
 
         // Handle Mobile Media
         if (req.files && req.files.mobileMedia) {
-            mobileMediaUrl = `/uploads/${req.files.mobileMedia[0].filename}`;
+            const result = await uploadFromBuffer(req.files.mobileMedia[0].buffer, {
+                folder: 'ngo/hero/mobile',
+                resource_type: 'auto'
+            });
+            mobileMediaUrl = result.secure_url;
+            req.body.mobileMediaPublicId = result.public_id;
         } else if (req.body.mobileMediaUrl) {
             mobileMediaUrl = req.body.mobileMediaUrl;
         }
@@ -88,7 +100,9 @@ exports.createHero = async (req, res) => {
             subtitle,
             type: type || 'image',
             mediaUrl,
+            mediaPublicId: req.body.mediaPublicId,
             mobileMediaUrl,
+            mobileMediaPublicId: req.body.mobileMediaPublicId,
             link,
             buttons: parsedButtons,
             clickAction: clickAction || 'button',
@@ -101,12 +115,6 @@ exports.createHero = async (req, res) => {
             data: hero
         });
     } catch (error) {
-        // Remove uploaded files if error
-        if (req.files) {
-            if (req.files.media) fs.unlinkSync(req.files.media[0].path);
-            if (req.files.mobileMedia) fs.unlinkSync(req.files.mobileMedia[0].path);
-        }
-
         res.status(500).json({
             success: false,
             error: error.message || 'Server Error'
@@ -134,22 +142,30 @@ exports.updateHero = async (req, res) => {
 
         // Handle Desktop Media Update
         if (req.files && req.files.media) {
-            if (hero.mediaUrl && !hero.mediaUrl.startsWith('http')) {
-                const oldPath = path.join(__dirname, '../../', hero.mediaUrl);
-                if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+            if (hero.mediaPublicId) {
+                await cloudinary.uploader.destroy(hero.mediaPublicId);
             }
-            mediaUrl = `/uploads/${req.files.media[0].filename}`;
+            const result = await uploadFromBuffer(req.files.media[0].buffer, {
+                folder: 'ngo/hero',
+                resource_type: 'auto'
+            });
+            mediaUrl = result.secure_url;
+            req.body.mediaPublicId = result.public_id;
         } else if (req.body.mediaUrl) {
             mediaUrl = req.body.mediaUrl;
         }
 
         // Handle Mobile Media Update
         if (req.files && req.files.mobileMedia) {
-            if (hero.mobileMediaUrl && !hero.mobileMediaUrl.startsWith('http')) {
-                const oldPath = path.join(__dirname, '../../', hero.mobileMediaUrl);
-                if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+            if (hero.mobileMediaPublicId) {
+                await cloudinary.uploader.destroy(hero.mobileMediaPublicId);
             }
-            mobileMediaUrl = `/uploads/${req.files.mobileMedia[0].filename}`;
+            const result = await uploadFromBuffer(req.files.mobileMedia[0].buffer, {
+                folder: 'ngo/hero/mobile',
+                resource_type: 'auto'
+            });
+            mobileMediaUrl = result.secure_url;
+            req.body.mobileMediaPublicId = result.public_id;
         } else if (req.body.mobileMediaUrl) {
             mobileMediaUrl = req.body.mobileMediaUrl;
         }
@@ -169,7 +185,9 @@ exports.updateHero = async (req, res) => {
             subtitle,
             type,
             mediaUrl,
+            mediaPublicId: req.body.mediaPublicId || hero.mediaPublicId,
             mobileMediaUrl,
+            mobileMediaPublicId: req.body.mobileMediaPublicId || hero.mobileMediaPublicId,
             link,
             buttons: parsedButtons !== undefined ? parsedButtons : hero.buttons,
             clickAction: clickAction || hero.clickAction,
@@ -185,10 +203,6 @@ exports.updateHero = async (req, res) => {
             data: hero
         });
     } catch (error) {
-        if (req.files) {
-            if (req.files.media) fs.unlinkSync(req.files.media[0].path);
-            if (req.files.mobileMedia) fs.unlinkSync(req.files.mobileMedia[0].path);
-        }
         res.status(500).json({
             success: false,
             error: error.message || 'Server Error'
@@ -210,12 +224,12 @@ exports.deleteHero = async (req, res) => {
             });
         }
 
-        // Delete file if local
-        if (hero.mediaUrl && !hero.mediaUrl.startsWith('http')) {
-            const filePath = path.join(__dirname, '../../', hero.mediaUrl);
-            if (fs.existsSync(filePath)) {
-                fs.unlinkSync(filePath);
-            }
+        // Delete from Cloudinary
+        if (hero.mediaPublicId) {
+            await cloudinary.uploader.destroy(hero.mediaPublicId);
+        }
+        if (hero.mobileMediaPublicId) {
+            await cloudinary.uploader.destroy(hero.mobileMediaPublicId);
         }
 
         await hero.deleteOne();

@@ -1,6 +1,7 @@
 const Gallery = require('../models/Gallery');
 const Program = require('../models/Program');
 const cloudinary = require('../config/cloudinary');
+const { uploadFromBuffer } = require('../utils/cloudinary');
 
 // @desc    Get all gallery items
 // @route   GET /api/gallery
@@ -87,7 +88,7 @@ exports.uploadImages = async (req, res, next) => {
 
         for (const file of req.files) {
             // Upload to Cloudinary
-            const result = await cloudinary.uploader.upload(file.path, {
+            const result = await uploadFromBuffer(file.buffer, {
                 folder: 'ngo/gallery',
                 transformation: [
                     { width: 1200, height: 800, crop: 'limit' },

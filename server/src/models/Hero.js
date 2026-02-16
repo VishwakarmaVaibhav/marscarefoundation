@@ -26,6 +26,8 @@ const heroSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    mediaPublicId: String,
+    mobileMediaPublicId: String,
     // New Fields
     buttons: [{
         label: String,

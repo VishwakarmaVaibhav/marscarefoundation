@@ -1,4 +1,6 @@
 const ProgramCategory = require('../models/ProgramCategory');
+const cloudinary = require('../config/cloudinary');
+const { uploadFromBuffer } = require('../utils/cloudinary');
 const fs = require('fs');
 const path = require('path');
 
@@ -50,8 +52,12 @@ exports.createCategory = async (req, res) => {
         // Handle image upload if present
         let image = {};
         if (req.file) {
+            const result = await uploadFromBuffer(req.file.buffer, {
+                folder: 'ngo/categories'
+            });
             image = {
-                url: `/uploads/${req.file.filename}`,
+                url: result.secure_url,
+                publicId: result.public_id,
                 alt: title
             };
         } else if (req.body.imageUrl) { // Allow direct URL if provided
@@ -74,10 +80,6 @@ exports.createCategory = async (req, res) => {
             data: category
         });
     } catch (error) {
-        // Clean up uploaded file if database creation fails
-        if (req.file) {
-            fs.unlinkSync(req.file.path);
-        }
         res.status(500).json({
             success: false,
             error: error.message || 'Server Error'
@@ -103,15 +105,16 @@ exports.updateCategory = async (req, res) => {
 
         // Handle image update
         if (req.file) {
-            // Delete old image if local
-            if (category.image && category.image.url && !category.image.url.startsWith('http')) {
-                const oldPath = path.join(__dirname, '../../', category.image.url);
-                if (fs.existsSync(oldPath)) {
-                    fs.unlinkSync(oldPath);
-                }
+            // Delete old image from cloudinary
+            if (category.image && category.image.publicId) {
+                await cloudinary.uploader.destroy(category.image.publicId);
             }
+            const result = await uploadFromBuffer(req.file.buffer, {
+                folder: 'ngo/categories'
+            });
             category.image = {
-                url: `/uploads/${req.file.filename}`,
+                url: result.secure_url,
+                publicId: result.public_id,
                 alt: title || category.title
             };
         } else if (req.body.imageUrl) {
@@ -133,9 +136,6 @@ exports.updateCategory = async (req, res) => {
             data: category
         });
     } catch (error) {
-        if (req.file) {
-            fs.unlinkSync(req.file.path);
-        }
         res.status(500).json({
             success: false,
             error: error.message || 'Server Error'
@@ -157,12 +157,9 @@ exports.deleteCategory = async (req, res) => {
             });
         }
 
-        // Delete image if local
-        if (category.image && category.image.url && !category.image.url.startsWith('http')) {
-            const filePath = path.join(__dirname, '../../', category.image.url);
-            if (fs.existsSync(filePath)) {
-                fs.unlinkSync(filePath);
-            }
+        // Delete from Cloudinary
+        if (category.image && category.image.publicId) {
+            await cloudinary.uploader.destroy(category.image.publicId);
         }
 
         await category.deleteOne();
