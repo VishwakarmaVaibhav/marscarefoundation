@@ -8,10 +8,9 @@ import Link from 'next/link';
 import { programsApi } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
 import PageHero from '@/components/PageHero';
-import axios from 'axios';
 import ProgramCard from '@/components/ProgramCard'; // Reusing the existing card component
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+import api from '@/lib/api';
 
 export default function ProgramsPage() {
     const [programs, setPrograms] = useState([]);
@@ -27,7 +26,7 @@ export default function ProgramsPage() {
         try {
             const [progRes, catRes] = await Promise.all([
                 programsApi.getAll(),
-                axios.get(`${API_URL}/program-categories`)
+                api.get('/program-categories')
             ]);
             setPrograms(progRes.data.data);
             setCategories(catRes.data.data.sort((a, b) => a.order - b.order));

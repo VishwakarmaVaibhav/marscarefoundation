@@ -6,6 +6,7 @@ import { Autoplay, Pagination, EffectCreative, Navigation } from 'swiper/modules
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { Heart, ArrowRight } from 'lucide-react';
+import api from '@/lib/api';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -30,8 +31,8 @@ export default function HeroSection() {
     useEffect(() => {
         const fetchSlides = async () => {
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/heroes`);
-                const data = await response.json();
+                const response = await api.get('/heroes');
+                const data = response.data;
                 if (data.success && data.data.length > 0) {
                     setSlides(data.data);
                 } else {
@@ -57,8 +58,7 @@ export default function HeroSection() {
     }
 
     const getMediaUrl = (slide) => {
-        const url = (isMobile && slide.mobileMediaUrl) ? slide.mobileMediaUrl : slide.mediaUrl;
-        return url.startsWith('http') ? url : `${process.env.NEXT_PUBLIC_API_URL.replace('/api', '')}${url}`;
+        return (isMobile && slide.mobileMediaUrl) ? slide.mobileMediaUrl : slide.mediaUrl;
     };
 
     return (

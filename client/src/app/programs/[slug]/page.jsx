@@ -6,11 +6,8 @@ import { ArrowRight, Heart, Users, Target, Calendar, CheckCircle, ChevronDown, S
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { programsApi } from '@/lib/api';
+import { programsApi, api } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
-import axios from 'axios';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export default function ProgramDetail() {
     const { slug } = useParams();
@@ -35,7 +32,7 @@ export default function ProgramDetail() {
     useEffect(() => {
         const fetchProgram = async () => {
             try {
-                const res = await axios.get(`${API_URL}/programs/${slug}`);
+                const res = await api.get(`/programs/${slug}`);
                 setProgram(res.data.data);
                 setLoading(false);
             } catch (error) {
