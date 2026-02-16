@@ -1,7 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     basePath: '/admin',
-    assetPrefix: '/admin',
+    async redirects() {
+        return [
+            {
+                source: '/',
+                destination: '/admin',
+                basePath: false,
+                permanent: false,
+            },
+        ]
+    },
     images: {
         domains: ['images.unsplash.com', 'res.cloudinary.com', 'localhost'],
     },
