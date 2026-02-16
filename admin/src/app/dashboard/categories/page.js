@@ -3,10 +3,8 @@
 import { useState, useEffect } from 'react';
 import { Plus, Trash2, Edit, Search, Upload, X, Loader2 } from 'lucide-react';
 import Image from 'next/image';
-import axios from 'axios';
+import api from '@/lib/api';
 import { toast } from 'sonner';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export default function CategoryManager() {
     const [categories, setCategories] = useState([]);
@@ -33,10 +31,7 @@ export default function CategoryManager() {
 
     const fetchCategories = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const res = await axios.get(`${API_URL}/program-categories/admin`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await api.get('/program-categories/admin');
             setCategories(res.data.data);
             setLoading(false);
         } catch (error) {
@@ -67,21 +62,17 @@ export default function CategoryManager() {
         if (selectedFile) data.append('image', selectedFile);
 
         try {
+            const config = {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            };
+
             if (isEditing) {
-                await axios.put(`${API_URL}/program-categories/${currentId}`, data, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                        Authorization: `Bearer ${token}`
-                    }
-                });
+                await api.put(`/program-categories/${currentId}`, data, config);
                 toast.success('Category updated successfully');
             } else {
-                await axios.post(`${API_URL}/program-categories`, data, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                        Authorization: `Bearer ${token}`
-                    }
-                });
+                await api.post('/program-categories', data, config);
                 toast.success('Category created successfully');
             }
             fetchCategories();
@@ -98,10 +89,7 @@ export default function CategoryManager() {
         if (!window.confirm('Are you sure? This might affect programs linked to this category.')) return;
 
         try {
-            const token = localStorage.getItem('token');
-            await axios.delete(`${API_URL}/program-categories/${id}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await api.delete(`/program-categories/${id}`);
             toast.success('Category deleted');
             setCategories(categories.filter(c => c._id !== id));
         } catch (error) {
@@ -116,7 +104,7 @@ export default function CategoryManager() {
             order: category.order || 0,
             isActive: category.isActive
         });
-        setPreviewUrl(category.image?.url ? (category.image.url.startsWith('http') ? category.image.url : `${API_URL.replace('/api', '')}${category.image.url}`) : null);
+        setPreviewUrl(category.image?.url || null);
         setCurrentId(category._id);
         setIsEditing(true);
         setModalOpen(true);
@@ -168,7 +156,7 @@ export default function CategoryManager() {
                         <div className="h-40 bg-gray-100 relative">
                             {item.image?.url ? (
                                 <Image
-                                    src={item.image.url.startsWith('http') ? item.image.url : `${API_URL.replace('/api', '')}${item.image.url}`}
+                                    src={item.image.url}
                                     alt={item.title}
                                     fill
                                     className="object-cover"

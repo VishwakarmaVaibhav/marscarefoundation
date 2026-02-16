@@ -3,14 +3,11 @@
 import { useState, useEffect } from 'react';
 import { Plus, Trash2, Edit, Search, Upload, X, Star, CheckCircle, HelpCircle, Image as ImageIcon, Loader2 } from 'lucide-react';
 import Image from 'next/image';
-import { programsApi } from '@/lib/api';
-import axios from 'axios';
+import { programsApi, api } from '@/lib/api';
 import { toast } from 'sonner';
 
 import ConfirmModal from '@/components/ConfirmModal';
 import Loader from '@/components/Loader';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export default function ProgramsManager() {
     const [programs, setPrograms] = useState([]);
@@ -56,10 +53,9 @@ export default function ProgramsManager() {
 
     const fetchData = async () => {
         try {
-            const token = localStorage.getItem('token');
             const [programsRes, categoriesRes] = await Promise.all([
                 programsApi.getAll(),
-                axios.get(`${API_URL}/program-categories/admin`, { headers: { Authorization: `Bearer ${token}` } })
+                api.get('/program-categories/admin')
             ]);
 
             setCategories(categoriesRes.data.data);
@@ -175,10 +171,7 @@ export default function ProgramsManager() {
     const handleCreateCategory = async () => {
         if (!newCatTitle.trim()) return;
         try {
-            const token = localStorage.getItem('token');
-            const res = await axios.post(`${API_URL}/program-categories`, { title: newCatTitle }, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const res = await api.post('/program-categories', { title: newCatTitle });
             setCategories([...categories, res.data.data]);
             setFormData(prev => ({ ...prev, category: res.data.data._id }));
             setCatModalOpen(false);
@@ -293,7 +286,7 @@ export default function ProgramsManager() {
                         <div className="relative h-48 bg-gray-100">
                             {item.featuredImage?.url ? (
                                 <Image
-                                    src={item.featuredImage.url.startsWith('http') ? item.featuredImage.url : `${API_URL.replace('/api', '')}${item.featuredImage.url}`}
+                                    src={item.featuredImage.url}
                                     alt={item.title}
                                     fill
                                     className="object-cover"

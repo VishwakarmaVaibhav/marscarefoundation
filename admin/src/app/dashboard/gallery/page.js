@@ -3,14 +3,11 @@
 import { useState, useEffect } from 'react';
 import { Image as ImageIcon, Plus, Trash2, Search, Upload, X, Loader2, Download } from 'lucide-react';
 import Image from 'next/image';
-import { galleryApi, programsApi } from '@/lib/api';
+import { galleryApi, programsApi, api } from '@/lib/api';
 import { toast } from 'sonner';
-import axios from 'axios';
 
 import ConfirmModal from '@/components/ConfirmModal';
 import Loader from '@/components/Loader';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export default function GalleryManager() {
     const [images, setImages] = useState([]);
@@ -170,12 +167,9 @@ export default function GalleryManager() {
                     alt: img.alt
                 }));
 
-            const token = localStorage.getItem('token');
-            await axios.post(`${API_URL}/gallery/import-program`, {
+            await api.post('/gallery/import-program', {
                 programId: selectedProgram,
                 images: imagesToImport
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
             });
 
             toast.success('Images imported successfully');

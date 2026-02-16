@@ -2,10 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Save, X, Image as ImageIcon, Video, Upload, Monitor, Smartphone, Link as LinkIcon, MousePointer } from 'lucide-react';
-import axios from 'axios';
+import api from '@/lib/api';
 import Image from 'next/image';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export default function HeroManager() {
     const [heroes, setHeroes] = useState([]);
@@ -42,10 +40,7 @@ export default function HeroManager() {
 
     const fetchPrograms = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const response = await axios.get(`${API_URL}/programs`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await api.get('/programs');
             setPrograms(response.data.data);
         } catch (error) {
             console.error('Error fetching programs:', error);
@@ -54,10 +49,7 @@ export default function HeroManager() {
 
     const fetchHeroes = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const response = await axios.get(`${API_URL}/heroes/admin`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const response = await api.get('/heroes/admin');
             setHeroes(response.data.data);
             setLoading(false);
         } catch (error) {
@@ -160,18 +152,16 @@ export default function HeroManager() {
         }
 
         try {
-            const token = localStorage.getItem('token');
             const config = {
                 headers: {
-                    'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${token}`
+                    'Content-Type': 'multipart/form-data'
                 }
             };
 
             if (currentHero) {
-                await axios.put(`${API_URL}/heroes/${currentHero._id}`, data, config);
+                await api.put(`/heroes/${currentHero._id}`, data, config);
             } else {
-                await axios.post(`${API_URL}/heroes`, data, config);
+                await api.post('/heroes', data, config);
             }
 
             fetchHeroes();
@@ -226,10 +216,7 @@ export default function HeroManager() {
     const handleDelete = async (id) => {
         if (!window.confirm('Are you sure you want to delete this slide?')) return;
         try {
-            const token = localStorage.getItem('token');
-            await axios.delete(`${API_URL}/heroes/${id}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await api.delete(`/heroes/${id}`);
             fetchHeroes();
         } catch (error) {
             console.error('Error deleting hero:', error);
@@ -265,10 +252,10 @@ export default function HeroManager() {
                         <div key={hero._id} className={`bg-white rounded-xl shadow-sm border overflow-hidden ${!hero.isActive ? 'opacity-60' : ''}`}>
                             <div className="h-48 relative bg-gray-100">
                                 {hero.type === 'video' ? (
-                                    <video src={hero.mediaUrl.startsWith('http') ? hero.mediaUrl : `${API_URL.replace('/api', '')}${hero.mediaUrl}`} className="w-full h-full object-cover" />
+                                    <video src={hero.mediaUrl} className="w-full h-full object-cover" />
                                 ) : (
                                     <Image
-                                        src={hero.mediaUrl.startsWith('http') ? hero.mediaUrl : `${API_URL.replace('/api', '')}${hero.mediaUrl}`}
+                                        src={hero.mediaUrl}
                                         alt={hero.title || 'Slide'}
                                         fill
                                         className="object-cover"
@@ -559,7 +546,7 @@ export default function HeroManager() {
                                     let currentPreview = '';
                                     if (previewMode === 'mobile') {
                                         if (formData.mobileMedia) currentPreview = URL.createObjectURL(formData.mobileMedia);
-                                        else if (currentHero?.mobileMediaUrl) currentPreview = currentHero.mobileMediaUrl.startsWith('http') ? currentHero.mobileMediaUrl : `${API_URL.replace('/api', '')}${currentHero.mobileMediaUrl}`;
+                                        else if (currentHero?.mobileMediaUrl) currentPreview = currentHero.mobileMediaUrl;
                                         else if (formData.media) currentPreview = URL.createObjectURL(formData.media);
                                         else currentPreview = previewUrl;
                                     } else {
