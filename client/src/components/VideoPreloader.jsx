@@ -6,6 +6,8 @@ import { Volume2, VolumeX } from 'lucide-react';
 
 export default function VideoPreloader() {
     const [show, setShow] = useState(true);
+    const [isMobile, setIsMobile] = useState(false);
+
 
     // Config: Inactivity threshold in milliseconds (e.g., 10 minutes)
     const INACTIVITY_THRESHOLD = 10 * 60 * 1000;
@@ -60,6 +62,26 @@ export default function VideoPreloader() {
         };
     }, []);
 
+    // Hydration fix: only render after mount
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.matchMedia('(max-width: 768px)').matches);
+        };
+
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    if (!mounted) return null;
+
+
     return (
         <AnimatePresence mode="wait">
             {show && (
@@ -72,13 +94,22 @@ export default function VideoPreloader() {
                 >
                     <video
                         autoPlay
-                        muted // Browsers often block unmuted autoplay.
+                        muted
                         playsInline
                         className="w-full h-full object-cover"
                         onEnded={() => setShow(false)}
                     >
-                        <source src="/logovideo.mp4" type="video/mp4" />
+                        <source
+                            src="/longvideomob.mp4"
+                            type="video/mp4"
+                            media="(max-width: 768px)"
+                        />
+                        <source
+                            src="/logovideo.mp4"
+                            type="video/mp4"
+                        />
                     </video>
+
 
                     {/* Skip Button */}
                     <div className="absolute bottom-8 right-8 z-20 flex gap-4">

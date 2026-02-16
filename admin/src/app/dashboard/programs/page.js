@@ -52,19 +52,25 @@ export default function ProgramsManager() {
     }, []);
 
     const fetchData = async () => {
+        setLoading(true);
+        // Fetch Programs
         try {
-            const [programsRes, categoriesRes] = await Promise.all([
-                programsApi.getAll(),
-                api.get('/program-categories/admin')
-            ]);
-
-            setCategories(categoriesRes.data.data);
+            const programsRes = await programsApi.getAll();
             setPrograms(programsRes.data.data);
-            setLoading(false);
         } catch (error) {
-            toast.error('Failed to fetch data');
-            setLoading(false);
+            console.error('Failed to fetch programs', error);
+            toast.error('Failed to fetch programs');
         }
+
+        // Fetch Categories (independent)
+        try {
+            const categoriesRes = await api.get('/program-categories/admin');
+            setCategories(categoriesRes.data.data);
+        } catch (error) {
+            console.error('Quick fix: ignoring category fetch error', error);
+        }
+
+        setLoading(false);
     };
 
     const confirmDelete = (id) => {
@@ -304,7 +310,7 @@ export default function ProgramsManager() {
                             </div>
                             <div className="absolute bottom-3 left-3">
                                 <span className="bg-white/90 backdrop-blur px-2 py-1 rounded text-xs font-semibold text-[#1A3C5A] capitalize">
-                                    {typeof item.category === 'object' ? item.category?.title : item.category}
+                                    {typeof item.category === 'object' && item.category ? item.category.title : 'Initiative'}
                                 </span>
                             </div>
                         </div>
@@ -357,9 +363,8 @@ export default function ProgramsManager() {
                                                 className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                                                 value={formData.category}
                                                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                                required
                                             >
-                                                <option value="">Select Category</option>
+                                                <option value="">Select Category (Optional)</option>
                                                 {categories.map(cat => (
                                                     <option key={cat._id} value={cat._id}>{cat.title}</option>
                                                 ))}

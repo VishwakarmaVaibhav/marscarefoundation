@@ -1,13 +1,21 @@
 import axios from 'axios';
 
-let API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5003/api';
+const getBaseUrl = () => {
+    let url = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5003/api';
+    // Remove trailing slash if present
+    if (url.endsWith('/')) {
+        url = url.slice(0, -1);
+    }
+    // Ensure it ends with /api
+    if (!url.endsWith('/api')) {
+        url += '/api';
+    }
+    return url;
+};
 
-// Ensure API_URL ends with /api for consistency
-if (API_URL && !API_URL.endsWith('/api')) {
-    API_URL = `${API_URL}${API_URL.endsWith('/') ? '' : '/'}api`;
-}
+const API_URL = getBaseUrl();
 
-const api = axios.create({
+export const api = axios.create({
     baseURL: API_URL,
     headers: {
         'Content-Type': 'application/json',

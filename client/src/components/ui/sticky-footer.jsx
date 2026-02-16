@@ -29,7 +29,7 @@ const footerLinkGroups = [
         links: [
             { title: 'About Us', href: '/about' },
             { title: 'Our Programs', href: '/programs' },
-            { title: 'Success Stories', href: '/stories' },
+            { title: 'Success Stories', href: '/gallery' },
             { title: 'Gallery', href: '/gallery' },
         ],
     },

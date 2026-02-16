@@ -58,7 +58,7 @@ export default function BlogSection() {
     };
 
     return (
-        <section className="relative py-32 overflow-hidden bg-white">
+        <section className="relative py-32 px-4 md:px-0 overflow-hidden bg-white">
             {/* Background Accent */}
             <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/[0.02] -skew-x-12 transform translate-x-1/2" />
 

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Search, Edit, Trash2, Eye, Filter } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Eye, Filter, Send } from 'lucide-react';
 import Link from 'next/link';
 import api from '@/lib/api';
 import { toast } from 'sonner';
@@ -18,6 +18,9 @@ export default function BlogsPage() {
     // Delete Modal State
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [itemToDelete, setItemToDelete] = useState(null);
+
+    // Sender State
+    const [sendingId, setSendingId] = useState(null);
 
     useEffect(() => {
         fetchBlogs();
@@ -55,6 +58,19 @@ export default function BlogsPage() {
             setItemToDelete(null);
         } catch (error) {
             toast.error('Failed to delete blog');
+        }
+    };
+
+    const handleSendNewsletter = async (blogId) => {
+        if (sendingId) return;
+        setSendingId(blogId);
+        try {
+            await api.post('/newsletter/send', { blogId });
+            toast.success('Newsletter sent successfully!');
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to send newsletter');
+        } finally {
+            setSendingId(null);
         }
     };
 
@@ -144,6 +160,18 @@ export default function BlogsPage() {
                                         <Link href={`/dashboard/blogs/${blog._id}`} className="p-2 hover:bg-white/10 rounded-lg text-white/50 hover:text-white">
                                             <Edit className="w-4 h-4" />
                                         </Link>
+                                        <button
+                                            onClick={() => handleSendNewsletter(blog._id)}
+                                            disabled={sendingId === blog._id}
+                                            className="p-2 hover:bg-blue-500/20 rounded-lg text-white/50 hover:text-blue-400 relative"
+                                            title="Send as Newsletter"
+                                        >
+                                            {sendingId === blog._id ? (
+                                                <Loader className="w-4 h-4 animate-spin" />
+                                            ) : (
+                                                <Send className="w-4 h-4" />
+                                            )}
+                                        </button>
                                         <button onClick={() => confirmDelete(blog._id)} className="p-2 hover:bg-red-500/20 rounded-lg text-white/50 hover:text-red-400">
                                             <Trash2 className="w-4 h-4" />
                                         </button>

@@ -107,8 +107,8 @@ export default function VolunteerPage() {
     return (
         <div className="min-h-screen bg-[#FDFBF7]">
             <PageHero
-                image="https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80&w=2070&auto=format&fit=crop"
-                mobileImage="https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80&w=1740&auto=format&fit=crop"
+                image="/volunteerdesk.jpg"
+                mobileImage="/volunteermob.jpg"
             />
 
             <section className="py-24 relative overflow-hidden">
@@ -119,7 +119,7 @@ export default function VolunteerPage() {
                 <div className="container-custom relative z-10">
                     <div className="grid lg:grid-cols-3 gap-16">
                         {/* Benefits & Impact Sidebar */}
-                        <div className="space-y-12">
+                        <div className="space-y-12 p-4 md:p-0">
                             <div className="space-y-6">
                                 <div className="flex items-center gap-3">
                                     <span className="w-8 h-[1px] bg-secondary" />
@@ -173,7 +173,7 @@ export default function VolunteerPage() {
                             initial={{ opacity: 0, y: 30 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            className="lg:col-span-2"
+                            className="lg:col-span-2 px-4 md:px-0"
                         >
                             <div className="bg-white/70 backdrop-blur-3xl rounded-[3.5rem] p-8 md:p-16 shadow-2xl shadow-primary/5 border border-white relative overflow-hidden">
                                 <h2 className="font-playfair text-4xl font-bold text-primary mb-12">Registry of Intent</h2>

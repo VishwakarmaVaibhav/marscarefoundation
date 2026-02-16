@@ -72,4 +72,20 @@ export const settingsApi = {
     update: (key, value) => api.put(`/settings/${key}`, { value }),
 };
 
+export const blogsApi = {
+    getAll: (params) => api.get('/blogs', { params }),
+    get: (id) => api.get(`/blogs/${id}`),
+    create: (data) => api.post('/blogs', data, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    }),
+    update: (id, data) => api.put(`/blogs/${id}`, data, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    }),
+    delete: (id) => api.delete(`/blogs/${id}`),
+};
+
+export const dashboardApi = {
+    getStats: () => api.get('/dashboard/stats'),
+};
+
 export default api;

@@ -70,7 +70,7 @@ function Counter({ value, suffix }) {
 
 export default function ImpactStats() {
     return (
-        <section className="py-24 relative overflow-hidden bg-background">
+        <section className="py-24 px-4 md:px-0 relative overflow-hidden bg-background">
             {/* Decorative Background Elements */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
                 <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] bg-primary/5 rounded-full blur-3xl" />

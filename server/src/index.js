@@ -62,6 +62,8 @@ app.use('/api/contact', require('./routes/contact.routes'));
 app.use('/api/settings', require('./routes/settings.routes'));
 app.use('/api/heroes', require('./routes/hero.routes'));
 app.use('/api/program-categories', require('./routes/programCategory.routes'));
+app.use('/api/newsletter', require('./routes/newsletter'));
+app.use('/api/dashboard', require('./routes/dashboard.routes'));
 
 
 // Health check

@@ -36,29 +36,7 @@ export default function PageHero({ title, description, image = '/images/hero-bg.
                 <div className="absolute inset-0 bg-primary/10 mix-blend-overlay" />
             </div>
 
-            {/* Content */}
-            <div className="container-custom relative z-10 text-center text-white px-4">
-                <div className="inline-block bg-white/5 backdrop-blur-sm border border-white/10 p-8 md:p-12 rounded-[2.5rem] shadow-2xl">
-                    <motion.h1
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, ease: "easeOut" }}
-                        className="font-playfair text-4xl md:text-6xl font-bold mb-6 italic tracking-tight"
-                    >
-                        {title}
-                    </motion.h1>
-                    {description && (
-                        <motion.p
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-                            className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto font-outfit font-light leading-relaxed"
-                        >
-                            {description}
-                        </motion.p>
-                    )}
-                </div>
-            </div>
+
         </section>
     );
 }

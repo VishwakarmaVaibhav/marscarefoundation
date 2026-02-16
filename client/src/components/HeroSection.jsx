@@ -114,84 +114,64 @@ export default function HeroSection() {
                                 />
                             )}
                             {/* Sophisticated Atmospheric Overlay - Less "Dark", More "Depth" */}
-                            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40 z-1" />
-                            <div className="absolute inset-0 bg-primary/5 mix-blend-overlay z-1" />
+
                         </div>
 
                         {/* Content Overlay */}
-                        <div className="absolute inset-0 z-10 flex flex-col justify-center md:items-start items-center text-center md:text-left container-custom">
+                        <div className="absolute inset-0 z-10 flex items-end justify-start p-28 md:p-24">
                             <AnimatePresence mode="wait">
-                                <motion.div
-                                    key={slide._id}
-                                    initial={{ opacity: 0, x: isMobile ? 0 : -50, y: isMobile ? 50 : 0 }}
-                                    animate={{ opacity: 1, x: 0, y: 0 }}
-                                    exit={{ opacity: 0, x: isMobile ? 0 : 50, y: isMobile ? -30 : 0 }}
-                                    transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                                    className="relative max-w-3xl pointer-events-none"
-                                >
-                                    {/* Glassmorphic Container for Text */}
-                                    <div className="bg-white/5 backdrop-blur-md border border-white/10 p-8 md:p-12 rounded-[2.5rem] shadow-2xl relative overflow-hidden pointer-events-auto
-                                        max-h-[35vh] md:max-h-none overflow-y-auto no-scrollbar
-                                        before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/10 before:to-transparent before:pointer-events-none">
+                                {(slide.title || slide.subtitle || (slide.buttons && slide.buttons.length > 0)) && (
+                                    <motion.div
+                                        key={slide._id}
+                                        initial={{ opacity: 0, y: 40 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: 20 }}
+                                        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                                        className="max-w-md w-full"
+                                    >
+                                        <div className="
+            bg-black/40 backdrop-blur-xl
+            border border-white/10
+            p-5 md:p-6
+            rounded-2xl
+            shadow-2xl
+        ">
 
-                                        {/* Micro-interaction: Decorative line */}
-                                        <motion.div
-                                            initial={{ width: 0 }}
-                                            animate={{ width: 64 }}
-                                            transition={{ delay: 0.5, duration: 1 }}
-                                            className="h-[2px] bg-secondary mb-6 hidden md:block"
-                                        />
+                                            {slide.title && (
+                                                <h1 className="text-xl md:text-3xl font-semibold text-white mb-2 leading-tight">
+                                                    {slide.title}
+                                                </h1>
+                                            )}
 
-                                        {slide.title && (
-                                            <motion.h1
-                                                initial={{ opacity: 0, y: 20 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                transition={{ delay: 0.3, duration: 0.8 }}
-                                                className="font-playfair text-3xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight italic tracking-tight"
-                                            >
-                                                {slide.title}
-                                            </motion.h1>
-                                        )}
+                                            {slide.subtitle && (
+                                                <p className="text-sm md:text-base text-white/70 mb-4 leading-relaxed">
+                                                    {slide.subtitle}
+                                                </p>
+                                            )}
 
-                                        {slide.subtitle && (
-                                            <motion.p
-                                                initial={{ opacity: 0, y: 20 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                transition={{ delay: 0.5, duration: 0.8 }}
-                                                className="text-base md:text-xl text-white/80 mb-8 max-w-xl leading-relaxed font-outfit font-light"
-                                            >
-                                                {slide.subtitle}
-                                            </motion.p>
-                                        )}
-
-                                        {/* Buttons - Staggered Reveal */}
-                                        {slide.buttons && slide.buttons.length > 0 && (
-                                            <div className="flex flex-wrap justify-center md:justify-start gap-4">
-                                                {slide.buttons.map((btn, index) => (
-                                                    <motion.div
-                                                        key={index}
-                                                        initial={{ opacity: 0, y: 10 }}
-                                                        animate={{ opacity: 1, y: 0 }}
-                                                        transition={{ delay: 0.7 + (index * 0.1), duration: 0.5 }}
-                                                    >
+                                            {slide.buttons && slide.buttons.length > 0 && (
+                                                <div className="flex flex-wrap gap-3">
+                                                    {slide.buttons.map((btn, index) => (
                                                         <Link
+                                                            key={index}
                                                             href={btn.link || '#'}
-                                                            className={`group flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-xs tracking-widest uppercase transition-all duration-500 transform hover:-translate-y-1 ${btn.variant === 'primary'
-                                                                ? 'bg-secondary text-white hover:bg-white hover:text-primary shadow-xl shadow-secondary/20'
-                                                                : btn.variant === 'secondary'
-                                                                    ? 'bg-white text-primary hover:bg-secondary hover:text-white shadow-xl'
-                                                                    : 'border border-white/30 text-white hover:bg-white/10 backdrop-blur-sm'
+                                                            className={`flex items-center gap-2 px-5 py-2 rounded-full text-xs font-semibold transition-all duration-300
+                            ${btn.variant === 'primary'
+                                                                    ? 'bg-secondary text-white hover:opacity-90'
+                                                                    : 'bg-white/10 text-white hover:bg-white/20 border border-white/20'
                                                                 }`}
                                                         >
                                                             {btn.label}
-                                                            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                                                         </Link>
-                                                    </motion.div>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                </motion.div>
+                                                    ))}
+                                                </div>
+                                            )}
+
+                                        </div>
+                                    </motion.div>
+                                )}
+
+
                             </AnimatePresence>
 
                             {/* Whole Slide Clickable Link Overlay */}
@@ -208,15 +188,24 @@ export default function HeroSection() {
             </Swiper>
 
             {/* Scroll Indicator */}
-            <motion.div
+            <motion.button
+                onClick={() => {
+                    window.scrollBy({
+                        top: window.innerHeight * 0.8,
+                        behavior: 'smooth'
+                    });
+                }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1, duration: 1 }}
-                className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 pointer-events-none"
+                className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 cursor-pointer"
             >
-                <span className="text-xs uppercase tracking-[0.2em] text-white/50">Scroll</span>
+                <span className="text-xs uppercase tracking-[0.2em] text-white/60">
+                    Scroll
+                </span>
                 <div className="h-12 w-[1px] bg-gradient-to-b from-white to-transparent"></div>
-            </motion.div>
+            </motion.button>
+
         </section>
     );
 }

@@ -1,16 +1,19 @@
+'use client';
+
 import Link from 'next/link';
-import { Heart, Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin, Youtube, ArrowRight } from 'lucide-react';
+import { Heart, Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin, Youtube, ArrowRight, Loader2 } from 'lucide-react';
+import { useState } from 'react';
+import api from '@/lib/api';
+import toast from 'react-hot-toast';
 
 const quickLinks = [
     { href: '/about', label: 'About Us' },
     { href: '/programs', label: 'Our Programs' },
     { href: '/donate', label: 'Donate' },
     { href: '/volunteer', label: 'Volunteer' },
-    { href: '/stories', label: 'Success Stories' },
+    { href: '/gallery', label: 'Success Stories' },
     { href: '/contact', label: 'Contact Us' },
 ];
-
-
 
 const socialLinks = [
     { href: '#', icon: Facebook, label: 'Facebook' },
@@ -21,8 +24,30 @@ const socialLinks = [
 ];
 
 export default function Footer() {
+    const [email, setEmail] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const handleSubscribe = async (e) => {
+        e.preventDefault();
+        if (!email) {
+            toast.error('Please enter your email address');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            await api.post('/newsletter/subscribe', { email });
+            toast.success('Successfully subscribed to our newsletter!');
+            setEmail('');
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to subscribe. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
-        <footer className="bg-[#1A3C5A] text-white pt-20 pb-10">
+        <footer className="bg-[#1A3C5A] text-white pt-20 px-4 md:px-0 pb-10">
             {/* Premium Newsletter Section */}
             <div className="container-custom mb-20">
                 <div className="relative overflow-hidden rounded-[3rem] bg-[#0A1A2F] p-10 md:p-16 border border-white/5 shadow-2xl">
@@ -46,14 +71,20 @@ export default function Footer() {
                         </div>
 
                         <div className="relative group">
-                            <form className="flex flex-col sm:flex-row gap-4 p-2 bg-white/5 backdrop-blur-xl rounded-2xl md:rounded-full border border-white/10 focus-within:border-secondary/50 transition-colors">
+                            <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-4 p-2 bg-white/5 backdrop-blur-xl rounded-2xl md:rounded-full border border-white/10 focus-within:border-secondary/50 transition-colors">
                                 <input
                                     type="email"
                                     placeholder="your.email@example.com"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     className="flex-1 px-6 py-4 bg-transparent border-none focus:ring-0 text-white placeholder:text-white/20 text-sm font-medium"
                                 />
-                                <button type="submit" className="px-10 py-4 bg-secondary text-white font-bold text-sm rounded-xl md:rounded-full hover:bg-white hover:text-primary transition-all shadow-lg hover:shadow-secondary/20 active:scale-95">
-                                    Subscribe Now
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="px-10 py-4 bg-secondary text-white font-bold text-sm rounded-xl md:rounded-full hover:bg-white hover:text-primary transition-all shadow-lg hover:shadow-secondary/20 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center min-w-[160px]"
+                                >
+                                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Subscribe Now'}
                                 </button>
                             </form>
                             <p className="mt-4 text-[10px] text-white/30 text-center lg:text-left font-medium tracking-wider uppercase">

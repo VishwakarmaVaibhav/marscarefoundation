@@ -9,10 +9,12 @@ import { formatCurrency } from '@/lib/utils';
 import PageHero from '@/components/PageHero';
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
+import { useRouter } from 'next/navigation';
 
 const suggestedAmounts = [500, 1000, 2500, 5000, 10000, 25000];
 
 export default function DonatePage() {
+    const router = useRouter();
     const [amount, setAmount] = useState(1000);
     const [customAmount, setCustomAmount] = useState('');
     const [donationType, setDonationType] = useState('one-time');
@@ -144,7 +146,8 @@ export default function DonatePage() {
                             donationId
                         });
                         toast.success('Thank you for your donation! 🎉');
-                        setStep(3);
+                        // Redirect to success page
+                        router.push('/success');
                     } catch (error) {
                         toast.error('Payment verification failed. Please contact support.');
                     }

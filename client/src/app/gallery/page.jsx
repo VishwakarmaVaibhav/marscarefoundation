@@ -64,8 +64,8 @@ export default function GalleryPage() {
     return (
         <div className="min-h-screen bg-[#FDFBF7]">
             <PageHero
-                image="https://images.unsplash.com/photo-1541976844346-a18bf90d2e13?q=80&w=2662&auto=format&fit=crop"
-                mobileImage="https://images.unsplash.com/photo-1542810634-7bc2c7ad3100?q=80&w=774&auto=format&fit=crop"
+                image="/gallerydesk.jpg"
+                mobileImage="/gallerymob.jpg"
             />
 
             <div className="container-custom py-24">

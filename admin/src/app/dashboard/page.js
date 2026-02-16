@@ -5,16 +5,33 @@ import { motion } from 'framer-motion';
 import {
     Users, CreditCard, Heart, TrendingUp,
     ArrowUpRight, ArrowDownRight, Calendar,
-    UserCheck, FileText, Eye
+    UserCheck, FileText, Eye, Loader2
 } from 'lucide-react';
 import {
     AreaChart, Area, XAxis, YAxis, CartesianGrid,
     Tooltip, ResponsiveContainer, BarChart, Bar
 } from 'recharts';
-import api from '@/lib/api';
+import api, { dashboardApi } from '@/lib/api';
 import { formatCurrency } from '@/lib/utils';
+import Link from 'next/link';
 
-// Sample data for charts
+// Helper to format date relative
+const timeAgo = (date) => {
+    const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+    let interval = seconds / 31536000;
+    if (interval > 1) return Math.floor(interval) + " years ago";
+    interval = seconds / 2592000;
+    if (interval > 1) return Math.floor(interval) + " months ago";
+    interval = seconds / 86400;
+    if (interval > 1) return Math.floor(interval) + " days ago";
+    interval = seconds / 3600;
+    if (interval > 1) return Math.floor(interval) + " hours ago";
+    interval = seconds / 60;
+    if (interval > 1) return Math.floor(interval) + " minutes ago";
+    return Math.floor(seconds) + " seconds ago";
+};
+
+// Placeholder data for charts until we implement advanced aggregation
 const donationData = [
     { name: 'Jan', amount: 45000 },
     { name: 'Feb', amount: 52000 },
@@ -33,20 +50,33 @@ const programData = [
 
 export default function DashboardPage() {
     const [stats, setStats] = useState({
-        totalDonations: 1250000,
-        totalDonors: 1250,
-        activeVolunteers: 85,
-        livesImpacted: 50000,
-        monthlyGrowth: 12.5,
-        donorGrowth: 8.3,
+        totalDonations: 0,
+        totalDonors: 0,
+        activeVolunteers: 0,
+        livesImpacted: 0,
+        monthlyGrowth: 0
     });
 
-    const [recentDonations, setRecentDonations] = useState([
-        { id: 1, donor: 'Rahul Sharma', amount: 5000, program: 'Education', date: '2 hours ago' },
-        { id: 2, donor: 'Priya Patel', amount: 2500, program: 'Healthcare', date: '5 hours ago' },
-        { id: 3, donor: 'Anonymous', amount: 10000, program: 'General Fund', date: '1 day ago' },
-        { id: 4, donor: 'Amit Kumar', amount: 1000, program: 'Child Welfare', date: '1 day ago' },
-    ]);
+    const [recentDonations, setRecentDonations] = useState([]);
+    const [recentBlogs, setRecentBlogs] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await dashboardApi.getStats();
+                const data = res.data.data;
+                setStats(data.stats);
+                setRecentDonations(data.recentDonations);
+                setRecentBlogs(data.recentBlogs);
+            } catch (error) {
+                console.error('Failed to fetch dashboard stats', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }, []);
 
     const statCards = [
         {
@@ -59,7 +89,6 @@ export default function DashboardPage() {
         {
             title: 'Total Donors',
             value: stats.totalDonors.toLocaleString(),
-            change: stats.donorGrowth,
             icon: Users,
             color: 'from-blue-400 to-blue-600'
         },
@@ -77,6 +106,8 @@ export default function DashboardPage() {
         },
     ];
 
+    if (loading) return <div className="flex justify-center items-center h-screen"><Loader2 className="w-8 h-8 animate-spin text-mars-orange" /></div>;
+
     return (
         <div className="space-y-6">
             {/* Stats Grid */}
@@ -93,10 +124,10 @@ export default function DashboardPage() {
                             <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center`}>
                                 <stat.icon className="w-6 h-6 text-white" />
                             </div>
-                            {stat.change && (
-                                <div className={`flex items-center gap-1 text-sm ${stat.change > 0 ? 'text-green-400' : 'text-red-400'
+                            {stat.change !== undefined && (
+                                <div className={`flex items-center gap-1 text-sm ${stat.change >= 0 ? 'text-green-400' : 'text-red-400'
                                     }`}>
-                                    {stat.change > 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
+                                    {stat.change >= 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
                                     {Math.abs(stat.change)}%
                                 </div>
                             )}
@@ -107,135 +138,160 @@ export default function DashboardPage() {
                 ))}
             </div>
 
-            {/* Charts Row */}
-            <div className="grid lg:grid-cols-2 gap-6">
-                {/* Donations Chart */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 }}
-                    className="glass-card p-6"
-                >
-                    <div className="flex items-center justify-between mb-6">
-                        <h3 className="font-heading font-semibold text-white">Donation Trends</h3>
-                        <select className="bg-white/10 border border-white/20 rounded-lg px-3 py-1.5 text-white text-sm">
-                            <option>Last 6 months</option>
-                            <option>Last year</option>
-                        </select>
-                    </div>
-                    <div className="h-64">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={donationData}>
-                                <defs>
-                                    <linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#FF6B35" stopOpacity={0.3} />
-                                        <stop offset="95%" stopColor="#FF6B35" stopOpacity={0} />
-                                    </linearGradient>
-                                </defs>
-                                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                                <XAxis dataKey="name" stroke="rgba(255,255,255,0.5)" />
-                                <YAxis stroke="rgba(255,255,255,0.5)" />
-                                <Tooltip
-                                    contentStyle={{
-                                        backgroundColor: '#1a1a2e',
-                                        border: '1px solid rgba(255,255,255,0.1)',
-                                        borderRadius: '8px'
-                                    }}
-                                    formatter={(value) => [formatCurrency(value), 'Amount']}
-                                />
-                                <Area
-                                    type="monotone"
-                                    dataKey="amount"
-                                    stroke="#FF6B35"
-                                    fillOpacity={1}
-                                    fill="url(#colorAmount)"
-                                />
-                            </AreaChart>
-                        </ResponsiveContainer>
-                    </div>
-                </motion.div>
+            {/* Main Content Grid */}
+            <div className="grid lg:grid-cols-3 gap-6">
 
-                {/* Program Distribution */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5 }}
-                    className="glass-card p-6"
-                >
-                    <h3 className="font-heading font-semibold text-white mb-6">Donations by Program</h3>
-                    <div className="h-64">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={programData} layout="vertical">
-                                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                                <XAxis type="number" stroke="rgba(255,255,255,0.5)" />
-                                <YAxis dataKey="name" type="category" stroke="rgba(255,255,255,0.5)" width={100} />
-                                <Tooltip
-                                    contentStyle={{
-                                        backgroundColor: '#1a1a2e',
-                                        border: '1px solid rgba(255,255,255,0.1)',
-                                        borderRadius: '8px'
-                                    }}
-                                    formatter={(value) => [formatCurrency(value), 'Donations']}
-                                />
-                                <Bar dataKey="donations" fill="#FF6B35" radius={[0, 4, 4, 0]} />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </div>
-                </motion.div>
-            </div>
-
-            {/* Recent Donations Table */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-                className="glass-card p-6"
-            >
-                <div className="flex items-center justify-between mb-6">
-                    <h3 className="font-heading font-semibold text-white">Recent Donations</h3>
-                    <a href="/dashboard/donations" className="text-mars-orange hover:underline text-sm">View All</a>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full">
-                        <thead>
-                            <tr className="border-b border-white/10">
-                                <th className="text-left py-3 text-white/50 font-medium">Donor</th>
-                                <th className="text-left py-3 text-white/50 font-medium">Amount</th>
-                                <th className="text-left py-3 text-white/50 font-medium">Program</th>
-                                <th className="text-left py-3 text-white/50 font-medium">Time</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {recentDonations.map((donation) => (
-                                <tr key={donation.id} className="border-b border-white/5 hover:bg-white/5">
-                                    <td className="py-4 text-white">{donation.donor}</td>
-                                    <td className="py-4 text-green-400 font-semibold">{formatCurrency(donation.amount)}</td>
-                                    <td className="py-4 text-white/70">{donation.program}</td>
-                                    <td className="py-4 text-white/50">{donation.date}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </motion.div>
-
-            {/* Quick Actions */}
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {[
-                    { label: 'New Blog Post', href: '/dashboard/blogs/new', icon: FileText },
-                    { label: 'Add Program', href: '/dashboard/programs/new', icon: Heart },
-                    { label: 'Upload Gallery', href: '/dashboard/gallery', icon: Eye },
-                    { label: 'View Reports', href: '/dashboard/donations', icon: TrendingUp },
-                ].map((action) => (
-                    <a
-                        key={action.label}
-                        href={action.href}
-                        className="glass-card p-4 flex items-center gap-3 hover:bg-white/10 transition-colors"
+                {/* Left Column - Charts & Donations */}
+                <div className="lg:col-span-2 space-y-6">
+                    {/* Donations Chart */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.4 }}
+                        className="glass-card p-6"
                     >
-                        <action.icon className="w-5 h-5 text-mars-orange" />
-                        <span className="text-white font-medium">{action.label}</span>
-                    </a>
-                ))}
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="font-heading font-semibold text-white">Donation Trends</h3>
+                            <select className="bg-white/10 border border-white/20 rounded-lg px-3 py-1.5 text-white text-sm">
+                                <option>Last 6 months</option>
+                                <option>Last year</option>
+                            </select>
+                        </div>
+                        <div className="h-64">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <AreaChart data={donationData}>
+                                    <defs>
+                                        <linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#FF6B35" stopOpacity={0.3} />
+                                            <stop offset="95%" stopColor="#FF6B35" stopOpacity={0} />
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                                    <XAxis dataKey="name" stroke="rgba(255,255,255,0.5)" />
+                                    <YAxis stroke="rgba(255,255,255,0.5)" />
+                                    <Tooltip
+                                        contentStyle={{
+                                            backgroundColor: '#1a1a2e',
+                                            border: '1px solid rgba(255,255,255,0.1)',
+                                            borderRadius: '8px'
+                                        }}
+                                        formatter={(value) => [formatCurrency(value), 'Amount']}
+                                    />
+                                    <Area
+                                        type="monotone"
+                                        dataKey="amount"
+                                        stroke="#FF6B35"
+                                        fillOpacity={1}
+                                        fill="url(#colorAmount)"
+                                    />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </motion.div>
+
+                    {/* Recent Donations Table */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.6 }}
+                        className="glass-card p-6"
+                    >
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="font-heading font-semibold text-white">Recent Donations</h3>
+                            <Link href="/dashboard/donations" className="text-mars-orange hover:underline text-sm">View All</Link>
+                        </div>
+                        <div className="overflow-x-auto">
+                            <table className="w-full">
+                                <thead>
+                                    <tr className="border-b border-white/10">
+                                        <th className="text-left py-3 text-white/50 font-medium">Donor</th>
+                                        <th className="text-left py-3 text-white/50 font-medium">Amount</th>
+                                        <th className="text-left py-3 text-white/50 font-medium">Program</th>
+                                        <th className="text-left py-3 text-white/50 font-medium">Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {recentDonations.length > 0 ? recentDonations.map((donation) => (
+                                        <tr key={donation._id} className="border-b border-white/5 hover:bg-white/5">
+                                            <td className="py-4 text-white">{donation.donor?.name || 'Anonymous'}</td>
+                                            <td className="py-4 text-green-400 font-semibold">{formatCurrency(donation.amount)}</td>
+                                            <td className="py-4 text-white/70">{donation.program?.title || 'General Fund'}</td>
+                                            <td className="py-4 text-white/50 text-sm">{timeAgo(donation.createdAt)}</td>
+                                        </tr>
+                                    )) : (
+                                        <tr>
+                                            <td colSpan="4" className="py-8 text-center text-white/50">No recent donations</td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </motion.div>
+                </div>
+
+                {/* Right Column - Quick Actions & Recent Blogs */}
+                <div className="space-y-6">
+                    {/* Quick Actions */}
+                    <div className="grid grid-cols-2 gap-4">
+                        {[
+                            { label: 'New Blog Post', href: '/dashboard/blogs/new', icon: FileText },
+                            { label: 'Add Program', href: '/dashboard/programs/new', icon: Heart },
+                            { label: 'Upload Gallery', href: '/dashboard/gallery', icon: Eye },
+                            { label: 'View Reports', href: '/dashboard/donations', icon: TrendingUp },
+                        ].map((action) => (
+                            <Link
+                                key={action.label}
+                                href={action.href}
+                                className="glass-card p-4 flex flex-col items-center justify-center gap-2 hover:bg-white/10 transition-colors text-center h-28"
+                            >
+                                <div className="p-2 rounded-full bg-mars-orange/10 text-mars-orange">
+                                    <action.icon className="w-6 h-6" />
+                                </div>
+                                <span className="text-white font-medium text-sm">{action.label}</span>
+                            </Link>
+                        ))}
+                    </div>
+
+                    {/* Recent Blogs */}
+                    <div className="glass-card p-6">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="font-heading font-semibold text-white">Recent Blogs</h3>
+                            <Link href="/dashboard/blogs" className="text-mars-orange hover:underline text-sm">View All</Link>
+                        </div>
+                        <div className="space-y-4">
+                            {recentBlogs.length > 0 ? recentBlogs.map((blog) => (
+                                <Link key={blog._id} href={`/dashboard/blogs/${blog._id}`} className="block group">
+                                    <div className="flex gap-3 hover:bg-white/5 p-2 rounded-lg transition-colors">
+                                        <div className="w-16 h-16 rounded-lg bg-white/10 overflow-hidden flex-shrink-0 relative">
+                                            {blog.featuredImage?.url ? (
+                                                <img src={blog.featuredImage.url} alt={blog.title} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-white/30">
+                                                    <FileText size={20} />
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <h4 className="text-white font-medium truncate group-hover:text-mars-orange transition-colors">{blog.title}</h4>
+                                            <div className="flex items-center justify-between mt-1">
+                                                <span className={`text-xs px-2 py-0.5 rounded-full ${blog.status === 'published' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'
+                                                    }`}>
+                                                    {blog.status}
+                                                </span>
+                                                <span className="text-white/40 text-xs">{new Date(blog.createdAt).toLocaleDateString()}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Link>
+                            )) : (
+                                <p className="text-white/50 text-center py-4">No blogs yet</p>
+                            )}
+                        </div>
+                        <Link href="/dashboard/blogs/new" className="mt-4 w-full btn-secondary text-sm flex items-center justify-center gap-2">
+                            <FileText size={16} /> Create New Post
+                        </Link>
+                    </div>
+                </div>
             </div>
         </div>
     );
