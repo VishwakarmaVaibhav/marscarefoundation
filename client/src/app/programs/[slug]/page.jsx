@@ -84,7 +84,7 @@ export default function ProgramDetail() {
                             )}
                         </div>
 
-                        <h1 className="font-playfair text-5xl md:text-7xl lg:text-8xl font-bold leading-[1.1] mb-10 text-white">
+                        <h1 className="font-playfair text-5xl md:text-7xl lg:text-8xl font-bold leading-[1.2] mb-10 text-white">
                             {program.title}
                         </h1>
 

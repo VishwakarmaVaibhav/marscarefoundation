@@ -76,7 +76,7 @@ export default function BlogSection() {
                         </div>
                         <h2 className="font-playfair text-5xl md:text-7xl font-bold text-primary leading-tight">
                             Latest from <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary italic">Mars Chronicles</span>
+                            <span className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary italic px-4 pb-3 pt-1 -mx-4 -mb-3 -mt-1">Mars Chronicles</span>
                         </h2>
                     </motion.div>
 

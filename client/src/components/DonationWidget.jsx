@@ -81,9 +81,9 @@ export default function DonationWidget() {
                             <Heart className="w-3.5 h-3.5 fill-current animate-pulse" />
                             Make a Difference
                         </div>
-                        <h3 className="font-playfair text-4xl md:text-5xl font-bold text-primary leading-[1.1] italic">
+                        <h3 className="font-playfair text-4xl md:text-5xl font-bold text-primary leading-[1.2] italic">
                             Kindness is the<br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary via-orange-400 to-primary">Universal Language</span>
+                            <span className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-secondary via-orange-400 to-primary px-4 pb-3 pt-1 -mx-4 -mb-3 -mt-1">Universal Language</span>
                         </h3>
                     </div>
 

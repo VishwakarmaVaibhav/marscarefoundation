@@ -92,8 +92,8 @@ export default function ImpactStats() {
                     >
                         Our Global Footprint
                     </motion.span>
-                    <h2 className="font-playfair text-4xl md:text-6xl font-bold text-primary mb-8 leading-tight">
-                        Making a <span className="text-secondary italic">
+                    <h2 className="font-playfair text-4xl md:text-6xl font-bold text-primary mb-8 leading-normal py-1">
+                        Making a <span className="inline-block text-secondary italic px-3 pb-2 -mx-3 -mb-2">
                             Real Difference
                         </span>
                     </h2>

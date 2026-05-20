@@ -28,6 +28,7 @@ module.exports = {
             fontFamily: {
                 sans: ['var(--font-inter)', 'Inter', 'sans-serif'],
                 heading: ['var(--font-outfit)', 'Outfit', 'sans-serif'],
+                playfair: ['var(--font-playfair)', 'serif'],
             },
             backgroundImage: {
                 'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

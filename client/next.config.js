@@ -13,7 +13,12 @@ const nextConfig = {
         ]
     },
     images: {
-        domains: ['images.unsplash.com', 'res.cloudinary.com', 'localhost'],
+        remotePatterns: [
+            { protocol: 'https', hostname: 'images.unsplash.com' },
+            { protocol: 'https', hostname: 'res.cloudinary.com' },
+            { protocol: 'http', hostname: 'localhost' },
+            { protocol: 'https', hostname: 'marscarefoundation.in' },
+        ],
     },
     env: {
         NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5003/api',

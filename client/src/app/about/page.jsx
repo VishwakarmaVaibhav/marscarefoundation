@@ -4,6 +4,16 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { Heart, Target, Eye, Users, Award, ShieldCheck } from 'lucide-react';
 import PageHero from '@/components/PageHero';
+import JsonLd from '@/components/JsonLd';
+
+const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://marscarefoundation.in' },
+        { '@type': 'ListItem', position: 2, name: 'About Us', item: 'https://marscarefoundation.in/about' },
+    ],
+};
 
 const values = [
     {
@@ -52,6 +62,7 @@ const team = [
 export default function AboutPage() {
     return (
         <div className="min-h-screen">
+            <JsonLd data={breadcrumbSchema} />
             <PageHero
                 image="https://images.unsplash.com/photo-1559027615-cd4628902d4a?q=80&w=2074&auto=format&fit=crop"
                 mobileImage="https://images.unsplash.com/photo-1593113598332-cd288d649433?q=80&w=1740&auto=format&fit=crop"
@@ -74,9 +85,9 @@ export default function AboutPage() {
                                 <span className="w-12 h-[2px] bg-secondary" />
                                 <span className="text-secondary font-bold tracking-[0.2em] uppercase text-xs">Our Genesis</span>
                             </div>
-                            <h2 className="font-playfair text-5xl md:text-7xl font-bold text-primary mt-2 mb-8 leading-[1.1]">
+                            <h2 className="font-playfair text-5xl md:text-7xl font-bold text-primary mt-2 mb-8 leading-[1.2]">
                                 Empowering Communities, <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary italic">Transforming Lives</span>
+                                <span className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary italic px-4 pb-3 pt-1 -mx-4 -mb-3 -mt-1">Transforming Lives</span>
                             </h2>
                             <p className="font-outfit text-xl text-gray-500 mb-10 leading-relaxed font-light">
                                 Mars Care Foundation is a human-centric organization dedicated to creating a world where every individual has access to quality education, essential healthcare, and equal opportunities.

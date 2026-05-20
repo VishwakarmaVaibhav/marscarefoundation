@@ -107,8 +107,8 @@ export default function Footer() {
                             </div>
                         </Link>
                         <p className="text-white/70 mb-6 leading-relaxed">
-                            Mars Care Foundation is dedicated to transforming lives through education,
-                            healthcare, and community development programs across India.
+                            Mars Care Foundation is a registered NGO in <strong>Mira Road, Mumbai</strong> dedicated to transforming
+                            lives through education, healthcare, and community development programs across India.
                         </p>
                         <div className="flex gap-3">
                             {socialLinks.map((social) => (
@@ -151,7 +151,7 @@ export default function Footer() {
                         <ul className="space-y-4">
                             <li className="flex items-start gap-3 text-white/70">
                                 <MapPin className="w-5 h-5 text-secondary flex-shrink-0 mt-0.5" />
-                                <span>123 NGO Street, Mumbai, Maharashtra, India - 400001</span>
+                                <span>Mira Road (East), Thane District, Mumbai, Maharashtra — 401107</span>
                             </li>
                             <li>
                                 <a href="tel:+919876543210" className="flex items-center gap-3 text-white/70 hover:text-secondary transition-colors">
