@@ -12,13 +12,12 @@ const contactInfo = [
     {
         icon: MapPin,
         title: 'Our Office',
-        content: '123 NGO Street, Mumbai, Maharashtra, India - 400001',
+        content: 'Eternity Business Centre\nTeen Hath Naka, Thane West',
     },
     {
         icon: Phone,
-        title: 'Phone',
-        content: '+91 98765 43210',
-        link: 'tel:+919876543210',
+        title: 'Phone Numbers',
+        content: 'Thane: +91 99872 64214\nPune: +91 88888 35799\nBangalore: +91 78480 90926\nMumbai: +91 99300 06863',
     },
     {
         icon: Mail,
@@ -90,16 +89,24 @@ export default function ContactPage() {
                                                 {item.content}
                                             </a>
                                         ) : (
-                                            <p className="text-gray-600">{item.content}</p>
+                                            <p className="text-gray-600 whitespace-pre-line">{item.content}</p>
                                         )}
                                     </div>
                                 </div>
                             </motion.div>
                         ))}
 
-                        {/* Map Placeholder */}
-                        <div className="bg-white rounded-2xl p-6 h-64 flex items-center justify-center text-gray-400 border border-gray-100">
-                            <p>Google Maps Integration</p>
+                        {/* Map Integration */}
+                        <div className="bg-white rounded-2xl p-2 h-[400px] flex items-center justify-center text-gray-400 border border-gray-100 overflow-hidden shadow-sm">
+                            <iframe 
+                                src="https://maps.google.com/maps?q=19.188154,72.963973&z=15&output=embed"
+                                width="100%" 
+                                height="100%" 
+                                style={{ border: 0, borderRadius: '1rem' }} 
+                                allowFullScreen="" 
+                                loading="lazy" 
+                                referrerPolicy="no-referrer-when-downgrade"
+                            />
                         </div>
                     </div>
 

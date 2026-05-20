@@ -32,20 +32,20 @@ export const metadata = {
         template: '%s | Mars Care Foundation',
     },
     description:
-        'Mars Care Foundation is a top registered NGO in Mira Road, Mumbai, Maharashtra. We transform underprivileged lives through child education, rural healthcare, women empowerment, and community development. Donate online with 80G tax benefit.',
+        'Mars Care Foundation is a top registered NGO in Thane West, Maharashtra. We transform underprivileged lives through child education, rural healthcare, women empowerment, and community development. Donate online with 80G tax benefit.',
     keywords: [
         // Brand
         'Mars Care Foundation',
         'Mars Care NGO',
         'marscarefoundation.in',
-        // Local — Mira Road
-        'NGO in Mira Road',
-        'best NGO in Mira Road',
-        'NGO Mira Road Mumbai',
-        'charity Mira Road',
-        'social work Mira Road',
-        'volunteer Mira Road',
-        'donation Mira Road',
+        // Local — Thane
+        'NGO in Thane West',
+        'best NGO in Thane',
+        'NGO Thane West',
+        'charity Thane',
+        'social work Thane',
+        'volunteer Thane',
+        'donation Thane',
         // Local — Mumbai
         'NGO in Mumbai',
         'best NGO in Mumbai',
@@ -149,11 +149,58 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@graph': [
+            {
+                '@type': 'NGO',
+                '@id': 'https://marscarefoundation.in/#organization',
+                'name': 'Mars Care Foundation',
+                'url': 'https://marscarefoundation.in',
+                'logo': 'https://marscarefoundation.in/Ngologo.png',
+                'contactPoint': [
+                    {
+                        '@type': 'ContactPoint',
+                        'telephone': '+91-9987264214',
+                        'contactType': 'customer service',
+                        'areaServed': 'IN',
+                        'availableLanguage': ['English', 'Hindi', 'Marathi']
+                    }
+                ]
+            },
+            {
+                '@type': 'LocalBusiness',
+                '@id': 'https://marscarefoundation.in/#localBusiness',
+                'name': 'Mars Care Foundation',
+                'image': 'https://marscarefoundation.in/Ngologo.png',
+                'address': {
+                    '@type': 'PostalAddress',
+                    'streetAddress': 'Eternity Business Centre, Teen Hath naka',
+                    'addressLocality': 'Thane West',
+                    'addressRegion': 'Maharashtra',
+                    'addressCountry': 'IN'
+                },
+                'geo': {
+                    '@type': 'GeoCoordinates',
+                    'latitude': 19.188154,
+                    'longitude': 72.963973
+                },
+                'url': 'https://marscarefoundation.in',
+                'telephone': '+91-9987264214',
+                'priceRange': '₹'
+            }
+        ]
+    };
+
     return (
         <html lang="en-IN" className={`${inter.variable} ${outfit.variable} ${playfair.variable}`}>
             <head>
                 <link rel="icon" href="/favicon.ico" sizes="any" />
                 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+                />
             </head>
             <body className="min-h-screen flex flex-col">
                 <VideoPreloader />

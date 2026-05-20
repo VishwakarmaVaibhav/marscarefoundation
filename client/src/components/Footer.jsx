@@ -107,7 +107,7 @@ export default function Footer() {
                             </div>
                         </Link>
                         <p className="text-white/70 mb-6 leading-relaxed">
-                            Mars Care Foundation is a registered NGO in <strong>Mira Road, Mumbai</strong> dedicated to transforming
+                            Mars Care Foundation is a registered NGO in <strong>Thane West, Maharashtra</strong> dedicated to transforming
                             lives through education, healthcare, and community development programs across India.
                         </p>
                         <div className="flex gap-3">
@@ -151,13 +151,28 @@ export default function Footer() {
                         <ul className="space-y-4">
                             <li className="flex items-start gap-3 text-white/70">
                                 <MapPin className="w-5 h-5 text-secondary flex-shrink-0 mt-0.5" />
-                                <span>Mira Road (East), Thane District, Mumbai, Maharashtra — 401107</span>
+                                <span>Eternity Business Centre, Teen Hath Naka, Thane West</span>
                             </li>
                             <li>
-                                <a href="tel:+919876543210" className="flex items-center gap-3 text-white/70 hover:text-secondary transition-colors">
-                                    <Phone className="w-5 h-5 text-secondary" />
-                                    +91 98765 43210
-                                </a>
+                                <div className="flex flex-col gap-2 text-white/70">
+                                    <span className="font-semibold text-white">Contact Numbers:</span>
+                                    <a href="tel:+919987264214" className="flex items-center gap-3 hover:text-secondary transition-colors">
+                                        <Phone className="w-4 h-4 text-secondary" />
+                                        Thane: +91 99872 64214
+                                    </a>
+                                    <a href="tel:+918888835799" className="flex items-center gap-3 hover:text-secondary transition-colors">
+                                        <Phone className="w-4 h-4 text-secondary" />
+                                        Pune: +91 88888 35799
+                                    </a>
+                                    <a href="tel:+917848090926" className="flex items-center gap-3 hover:text-secondary transition-colors">
+                                        <Phone className="w-4 h-4 text-secondary" />
+                                        Bangalore: +91 78480 90926
+                                    </a>
+                                    <a href="tel:+919930006863" className="flex items-center gap-3 hover:text-secondary transition-colors">
+                                        <Phone className="w-4 h-4 text-secondary" />
+                                        Mumbai: +91 99300 06863
+                                    </a>
+                                </div>
                             </li>
                             <li>
                                 <a href="mailto:info@marscarefoundation.org" className="flex items-center gap-3 text-white/70 hover:text-secondary transition-colors">
