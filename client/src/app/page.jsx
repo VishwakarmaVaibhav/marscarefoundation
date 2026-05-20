@@ -307,12 +307,12 @@ export default function HomePage() {
                             // Loading skeleton
                             [...Array(3)].map((_, i) => (
                                 <div key={i} className="glass-card h-[450px] animate-pulse">
-                                    <li className="flex items-start gap-3 text-white/70">
-                                        <MapPin className="w-5 h-5 text-secondary flex-shrink-0 mt-0.5" />
-                                        <span>Mira Road (East), Thane District, Mumbai, Maharashtra - 401107</span>
-                                    </li>
-                                    <div className="h-4 bg-gray-200/20 rounded w-full" />
-                                    <div className="h-4 bg-gray-200/20 rounded w-2/3" />
+                                    <div className="h-56 bg-gray-200/20" />
+                                    <div className="p-6 space-y-4">
+                                        <div className="h-6 bg-gray-200/20 rounded w-3/4" />
+                                        <div className="h-4 bg-gray-200/20 rounded w-full" />
+                                        <div className="h-4 bg-gray-200/20 rounded w-2/3" />
+                                    </div>
                                 </div>
                             ))
                         ) : featuredPrograms.length > 0 ? (
@@ -336,10 +336,6 @@ export default function HomePage() {
                         <div className="absolute top-0 right-0 w-64 h-64 bg-secondary/10 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2" />
                         <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent/10 rounded-full blur-3xl transform -translate-x-1/2 translate-y-1/2" />
 
-                        <p className="text-white/70 mb-6 leading-relaxed">
-                            Mars Care Foundation is a registered NGO in Mira Road, Mumbai dedicated to transforming
-                            lives through education, healthcare, and community development programs across India.
-                        </p>
 
                         <div className="relative z-10">
                             <motion.div
