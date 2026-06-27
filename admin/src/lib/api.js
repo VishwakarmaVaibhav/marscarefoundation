@@ -9,9 +9,6 @@ if (API_URL && !API_URL.endsWith('/api')) {
 
 const api = axios.create({
     baseURL: API_URL,
-    headers: {
-        'Content-Type': 'application/json',
-    },
 });
 
 // Request interceptor for auth token
@@ -47,21 +44,15 @@ export const programsApi = {
     getFeatured: () => api.get('/programs/featured'),
     getBySlug: (slug) => api.get(`/programs/${slug}`),
     getCategories: () => api.get('/programs/categories'),
-    create: (data) => api.post('/programs', data, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-    }),
-    update: (id, data) => api.put(`/programs/${id}`, data, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-    }),
+    create: (data) => api.post('/programs', data),
+    update: (id, data) => api.put(`/programs/${id}`, data),
     delete: (id) => api.delete(`/programs/${id}`),
 };
 
 export const galleryApi = {
     getAll: (params) => api.get('/gallery', { params }),
     getAlbums: () => api.get('/gallery/albums'),
-    upload: (data) => api.post('/gallery', data, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-    }),
+    upload: (data) => api.post('/gallery', data),
     delete: (id) => api.delete(`/gallery/${id}`),
 };
 
@@ -75,12 +66,8 @@ export const settingsApi = {
 export const blogsApi = {
     getAll: (params) => api.get('/blogs', { params }),
     get: (id) => api.get(`/blogs/${id}`),
-    create: (data) => api.post('/blogs', data, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-    }),
-    update: (id, data) => api.put(`/blogs/${id}`, data, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-    }),
+    create: (data) => api.post('/blogs', data),
+    update: (id, data) => api.put(`/blogs/${id}`, data),
     delete: (id) => api.delete(`/blogs/${id}`),
 };
 

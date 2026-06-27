@@ -27,7 +27,7 @@ const blogSchema = new mongoose.Schema({
     },
     category: {
         type: String,
-        enum: ['news', 'events', 'success-stories', 'announcements', 'impact-reports', 'Education', 'Healthcare', 'Empowerment', 'Impact'],
+        enum: ['news', 'events', 'success-stories', 'announcements', 'impact-reports', 'Education', 'Healthcare', 'Empowerment', 'Impact', 'stories', 'education', 'health', 'environment'],
         default: 'news'
     },
     tags: [{

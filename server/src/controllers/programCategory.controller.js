@@ -72,7 +72,7 @@ exports.createCategory = async (req, res) => {
             description,
             image,
             order: order || 0,
-            isActive: isActive === 'true' || isActive === true
+            isActive: isActive === undefined ? true : (isActive === 'true' || isActive === true)
         });
 
         res.status(201).json({

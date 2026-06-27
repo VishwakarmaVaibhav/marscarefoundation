@@ -85,6 +85,11 @@ exports.createProgram = async (req, res, next) => {
             try { req.body.testimonials = JSON.parse(req.body.testimonials); } catch (e) { req.body.testimonials = []; }
         }
 
+        // Sanitize targetAmount
+        if (req.body.targetAmount === 'null' || req.body.targetAmount === 'undefined' || req.body.targetAmount === '') {
+            req.body.targetAmount = null;
+        }
+
         // Handle featured image upload
         req.body.featuredImage = {};
         if (req.files && req.files.featuredImage) {
@@ -152,6 +157,11 @@ exports.updateProgram = async (req, res, next) => {
         }
         if (req.body.testimonials && typeof req.body.testimonials === 'string') {
             try { req.body.testimonials = JSON.parse(req.body.testimonials); } catch (e) { }
+        }
+
+        // Sanitize targetAmount
+        if (req.body.targetAmount === 'null' || req.body.targetAmount === 'undefined' || req.body.targetAmount === '') {
+            req.body.targetAmount = null;
         }
 
         // Handle new image upload

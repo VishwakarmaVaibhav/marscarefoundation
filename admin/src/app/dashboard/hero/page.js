@@ -152,16 +152,10 @@ export default function HeroManager() {
         }
 
         try {
-            const config = {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            };
-
             if (currentHero) {
-                await api.put(`/heroes/${currentHero._id}`, data, config);
+                await api.put(`/heroes/${currentHero._id}`, data);
             } else {
-                await api.post('/heroes', data, config);
+                await api.post('/heroes', data);
             }
 
             fetchHeroes();

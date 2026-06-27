@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Image as ImageIcon, Plus, Trash2, Search, Upload, X, Loader2, Download } from 'lucide-react';
 import Image from 'next/image';
-import { galleryApi, programsApi, api } from '@/lib/api';
+import api, { galleryApi, programsApi } from '@/lib/api';
 import { toast } from 'sonner';
 
 import ConfirmModal from '@/components/ConfirmModal';

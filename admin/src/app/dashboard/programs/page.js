@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, Trash2, Edit, Search, Upload, X, Star, CheckCircle, HelpCircle, Image as ImageIcon, Loader2 } from 'lucide-react';
 import Image from 'next/image';
-import { programsApi, api } from '@/lib/api';
+import api, { programsApi } from '@/lib/api';
 import { toast } from 'sonner';
 
 import ConfirmModal from '@/components/ConfirmModal';
@@ -159,7 +159,7 @@ export default function ProgramsManager() {
         setFormData({
             title: program.title,
             description: program.description,
-            targetAmount: program.targetAmount,
+            targetAmount: program.targetAmount || '',
             category: categoryId || '',
             active: program.status === 'active',
             isFeatured: program.isFeatured,
@@ -360,11 +360,12 @@ export default function ProgramsManager() {
                                         <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
                                         <div className="flex gap-2">
                                             <select
+                                                required
                                                 className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                                                 value={formData.category}
                                                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                                             >
-                                                <option value="">Select Category (Optional)</option>
+                                                <option value="">Select Category</option>
                                                 {categories.map(cat => (
                                                     <option key={cat._id} value={cat._id}>{cat.title}</option>
                                                 ))}

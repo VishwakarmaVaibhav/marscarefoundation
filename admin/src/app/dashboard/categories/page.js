@@ -62,17 +62,11 @@ export default function CategoryManager() {
         if (selectedFile) data.append('image', selectedFile);
 
         try {
-            const config = {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            };
-
             if (isEditing) {
-                await api.put(`/program-categories/${currentId}`, data, config);
+                await api.put(`/program-categories/${currentId}`, data);
                 toast.success('Category updated successfully');
             } else {
-                await api.post('/program-categories', data, config);
+                await api.post('/program-categories', data);
                 toast.success('Category created successfully');
             }
             fetchCategories();
